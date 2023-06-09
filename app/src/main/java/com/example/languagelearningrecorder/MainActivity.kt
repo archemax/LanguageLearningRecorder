@@ -10,6 +10,7 @@ import android.os.Handler
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import com.example.languagelearningrecorder.databinding.ActivityMainBinding
 import java.io.File
@@ -56,14 +57,18 @@ class MainActivity : AppCompatActivity(), Timer.TimerInterface {
 
         val recordButton = findViewById<ImageButton>(R.id.recordButton)
         val stopRecordButton = findViewById<ImageButton>(R.id.stopRecordButton)
+        val timerTextView = findViewById<TextView>(R.id.timerTextView)
 
         recordButton.setOnClickListener {
+            timer.start()
             stopRecordButton.visibility = View.VISIBLE
             myAudioRecorder.startRecording()
         }
-        stopRecordButton.setOnClickListener{
-            stopRecordButton.visibility=View.INVISIBLE
 
+        stopRecordButton.setOnClickListener{
+            timer.stop()
+            timerTextView.text = "00:00:00"
+            stopRecordButton.visibility=View.INVISIBLE
             myAudioRecorder.stopRecording()
             val filePath = myAudioRecorder.getLastRecordedFilePath()
             myMediaPlayer.playLastRecordedAudio(filePath)

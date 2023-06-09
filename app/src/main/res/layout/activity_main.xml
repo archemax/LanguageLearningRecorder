@@ -20,7 +20,6 @@
     <ImageButton
 
         android:id="@+id/recordButton"
-
         android:background="@drawable/circle_background"
         android:layout_width="100dp"
         android:layout_height="100dp"
