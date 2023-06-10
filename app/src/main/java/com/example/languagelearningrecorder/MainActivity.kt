@@ -21,16 +21,13 @@ import java.util.Locale
 import java.util.TimerTask
 
 
-
 class MainActivity : AppCompatActivity(), Timer.TimerInterface {
 
     private lateinit var binding: ActivityMainBinding
-
     private var permissions = arrayOf(android.Manifest.permission.RECORD_AUDIO)
     private var permissionGranted = false
-
     private lateinit var timer: Timer
-
+    private var myAudioRecorder: AudioRecorderClass? = null
 
     //// onCreate//////////////////////////////////////////////////////////////////////////////////////////
     @SuppressLint("ClickableViewAccessibility", "SuspiciousIndentation")
@@ -41,11 +38,11 @@ class MainActivity : AppCompatActivity(), Timer.TimerInterface {
 
         //get the cache directory
         val cacheDir = applicationContext.cacheDir
-        val myAudioRecorder = AudioRecorderClass(cacheDir)
+        myAudioRecorder = AudioRecorderClass(cacheDir)
         val myMediaPlayer = MediaPlayerClass()
 
-
         timer = Timer(this)
+
 
         permissionGranted = ActivityCompat.checkSelfPermission(
             this,
@@ -59,32 +56,32 @@ class MainActivity : AppCompatActivity(), Timer.TimerInterface {
         val stopRecordButton = findViewById<ImageButton>(R.id.stopRecordButton)
         val timerTextView = findViewById<TextView>(R.id.timerTextView)
 
+
+
         recordButton.setOnClickListener {
             timer.start()
             stopRecordButton.visibility = View.VISIBLE
-            myAudioRecorder.startRecording()
+            myAudioRecorder!!.startRecording()
+
+            binding.audioLevelView.setAudioRecorder(myAudioRecorder!!)
+            binding.audioLevelView.startUpdatingLevel()
+
+
         }
 
-        stopRecordButton.setOnClickListener{
+        stopRecordButton.setOnClickListener {
             timer.stop()
+            binding.audioLevelView.stopUpdatingLevel()
+            binding.audioLevelView.updateLevel(0)
+
+
             timerTextView.text = "00:00:00"
-            stopRecordButton.visibility=View.INVISIBLE
-            myAudioRecorder.stopRecording()
-            val filePath = myAudioRecorder.getLastRecordedFilePath()
+            stopRecordButton.visibility = View.INVISIBLE
+            myAudioRecorder!!.stopRecording()
+            val filePath = myAudioRecorder!!.getLastRecordedFilePath()
             myMediaPlayer.playLastRecordedAudio(filePath)
         }
-
-
-
-
-
-
-
-
-
-
     }
-
 
     override fun startTimer(duration: String) {
         binding.timerTextView.text = duration
@@ -94,4 +91,6 @@ class MainActivity : AppCompatActivity(), Timer.TimerInterface {
     companion object {
         private const val REQUEST_CODE = 125
     }
+
+
 }

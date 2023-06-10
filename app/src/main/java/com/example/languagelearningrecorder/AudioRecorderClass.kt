@@ -13,17 +13,26 @@ class AudioRecorderClass(private val cacheDir: File) {
     private var isRecording = false
     private var lastRecordedFilePath: String? = null
 
+    fun getCurrentAudioLevel(): Int {
+        val level = myMediaRecorder?.maxAmplitude
+        val editedLevel = level?.div(2) ?: 0
+        return editedLevel
+
+    }
     fun startRecording() {
         if (isRecording) return
 
         val outputFile = createOutputFile()
         lastRecordedFilePath = outputFile.absolutePath
 
+
+
         myMediaRecorder = MediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
             setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
             setOutputFile(outputFile.absolutePath)
+
             try {
                 prepare()
                 start()
