@@ -1,17 +1,39 @@
 package com.example.languagelearningrecorder
 
+import android.app.AlertDialog
 import android.content.Context
 import android.media.MediaRecorder
 import android.util.Log
+import android.widget.TextView
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
-class AudioRecorderClass(private val cacheDir: File) {
+class AudioRecorderClass(
+    private val cacheDir: File,
+    private val formatTextView: TextView) {
 
     private var myMediaRecorder: MediaRecorder? = null
     private var isRecording = false
     private var lastRecordedFilePath: String? = null
+    private var defaultFormatIndex = 2
+
+
+
+    init {
+        formatTextView.text = getAudioFormatName(defaultFormatIndex)
+        changeRecordingFormat(defaultFormatIndex)
+    }
+
+     fun getAudioFormatName(formatIndex: Int): String {
+        return when (formatIndex) {
+            0 -> "3gp"
+            1 -> "ogg"
+            2 -> "mpeg4"
+            else-> "mpeg4"
+        }
+    }
+
 
     fun getCurrentAudioLevel(): Int {
         val level = myMediaRecorder?.maxAmplitude
@@ -19,6 +41,7 @@ class AudioRecorderClass(private val cacheDir: File) {
         return editedLevel
 
     }
+
     fun startRecording() {
         if (isRecording) return
 
@@ -57,7 +80,7 @@ class AudioRecorderClass(private val cacheDir: File) {
                 release()
             } catch (error: IOException) {
                 error.printStackTrace()
-                Log.d ("my_log", "${error.printStackTrace()}")
+                Log.d("my_log", "${error.printStackTrace()}")
             }
 
         }
@@ -67,5 +90,39 @@ class AudioRecorderClass(private val cacheDir: File) {
 
     fun getLastRecordedFilePath(): String? {
         return lastRecordedFilePath
+    }
+
+    fun showFormatSelectionDialog(context: Context, textView: TextView) {
+        val audioFormats = arrayOf("3gp", "ogg", "mpeg4")
+        val builder = AlertDialog.Builder(context)
+
+        builder.setTitle("Select Audio Format")
+            .setItems(audioFormats) { _, format ->
+                changeRecordingFormat(format)
+                textView.text = audioFormats[format]
+
+            }
+            .setNegativeButton("cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setOnCancelListener {
+
+                changeRecordingFormat(defaultFormatIndex)
+                formatTextView.text = audioFormats[defaultFormatIndex]
+            }
+
+        builder.create().show()
+    }
+
+    private fun changeRecordingFormat(selectedIndex: Int) {
+        val outputFormat: Int = when (selectedIndex) {
+            0 -> MediaRecorder.OutputFormat.THREE_GPP
+            1 -> MediaRecorder.OutputFormat.OGG
+            else -> MediaRecorder.OutputFormat.MPEG_4
+
+        }
+        myMediaRecorder?.apply {
+            setOutputFormat(outputFormat)
+        }
     }
 }

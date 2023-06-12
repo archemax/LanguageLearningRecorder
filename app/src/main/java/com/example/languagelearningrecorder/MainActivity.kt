@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity(), Timer.TimerInterface {
 
         //get the cache directory
         val cacheDir = applicationContext.cacheDir
-        myAudioRecorder = AudioRecorderClass(cacheDir)
+        myAudioRecorder = AudioRecorderClass(cacheDir, binding.selectFormatTextView)
         val myMediaPlayer = MediaPlayerClass()
 
         timer = Timer(this)
@@ -81,6 +81,16 @@ class MainActivity : AppCompatActivity(), Timer.TimerInterface {
             val filePath = myAudioRecorder!!.getLastRecordedFilePath()
             myMediaPlayer.playLastRecordedAudio(filePath)
         }
+
+
+
+        binding.selectFormatTextView.setOnClickListener {
+            onFormatTextViewClicked()
+        }
+    }
+
+    private fun onFormatTextViewClicked(){
+        myAudioRecorder?.showFormatSelectionDialog(this, binding.selectFormatTextView)
     }
 
     override fun startTimer(duration: String) {
