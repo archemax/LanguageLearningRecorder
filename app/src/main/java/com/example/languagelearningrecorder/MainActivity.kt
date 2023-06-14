@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity(), Timer.TimerInterface {
     private lateinit var timer: Timer
     private var myAudioRecorder: AudioRecorderClass? = null
 
-    //// onCreate//////////////////////////////////////////////////////////////////////////////////////////
+/////////onCreate//////////////////////////////////////////////////////////////////////////////////////////
     @SuppressLint("ClickableViewAccessibility", "SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

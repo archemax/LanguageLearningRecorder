@@ -17,6 +17,7 @@ class AudioRecorderClass(
     private var isRecording = false
     private var lastRecordedFilePath: String? = null
     private var defaultFormatIndex = 2
+    private var selectedFormatIndex = 2
 
 
 
@@ -67,7 +68,8 @@ class AudioRecorderClass(
     }
 
     private fun createOutputFile(): File {
-        val fileName = "my_audio_${System.currentTimeMillis()}.m4a"
+        val formatExtension = getAudioFormatName(selectedFormatIndex)
+        val fileName = "my_audio_${System.currentTimeMillis()}.$formatExtension"
         return File(cacheDir, fileName)
     }
 
@@ -98,6 +100,7 @@ class AudioRecorderClass(
 
         builder.setTitle("Select Audio Format")
             .setItems(audioFormats) { _, format ->
+                selectedFormatIndex = format
                 changeRecordingFormat(format)
                 textView.text = audioFormats[format]
 
