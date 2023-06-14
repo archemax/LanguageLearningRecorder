@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity(), Timer.TimerInterface {
 
         //get the cache directory
         val cacheDir = applicationContext.cacheDir
-        myAudioRecorder = AudioRecorderClass(cacheDir, binding.selectFormatTextView)
+        myAudioRecorder = AudioRecorderClass(cacheDir, binding.selectFormatTextView,this)
         val myMediaPlayer = MediaPlayerClass()
 
         timer = Timer(this)
